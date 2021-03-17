@@ -1,12 +1,16 @@
+# Gold++
+
 List of Rich Libraries in gold library:
 
 1. I/O, formatting, and rich manipulators
-2. Windows GUI easy access
+2. Windows GUI easy access (win32 api and gdi)
 3. Console features
 4. Console canvas
-5. Utilities
-6. Math functions
-7. String functions
+5. Utilities (ranges, omnibox, pattern matching, ...)
+6. Math functions, number class
+7. String functions, string class
+8. Algorithms
+9. XML and JSON Parser
 
 ## Console Canvas
 Sypnosis:
@@ -29,8 +33,6 @@ namespace console::canvas {
   
   template <typename T, typename... Ts>
   void basic_line_path(std::pair<T, T> coord, Ts... coords);
-  
-  
   
 }
 ```
