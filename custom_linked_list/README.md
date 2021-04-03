@@ -87,3 +87,22 @@ These methods aren't recommended and temporary because the sole purpose is the d
 | `rotate` | TBA |
 | `rotate_left` | TBA |
 | `rotate_right` | TBA | 
+
+## Minimum and Maximum 
+| Name | Description | 
+| --- | --- |
+| `min_element` | TBA |
+| `max_element` | TBA |
+
+# To Be Added in the Future Implementation
+* `filter_copy`
+* `transform_copy`
+* `rotate_copy`
+* `rotate_left_copy`
+* `rotate_right_copy`
+* `fill` and `fill_copy`
+* `fill_n` and `fill_copy_n`
+* `for_each` and `for_each_n`
+* `reverse` and `reverse_copy`
+* `shuffle` and `shuffle_copy`
+* `sort` and `sort_copy`
