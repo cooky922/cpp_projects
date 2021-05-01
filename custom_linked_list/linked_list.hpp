@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <exception>
 #include <memory>
+#include <functional>
 
 template <typename T = int>
 class Linked_List {
@@ -60,6 +61,7 @@ private:
     }
 
 public:
+    using value_type = T;
     // CONSTRUCTOR
     Linked_List(): head{nullptr}, tail{nullptr} {}
 
@@ -74,41 +76,51 @@ public:
 
     ~Linked_List() { /***/ }
 
-    Linked_List& operator=(const Linked_List& __other) = delete;
-    /**
-    {
-        head = __other.head;
-        tail = __other.__get_tail();
-        current_node = __other.current_node;
+    Linked_List& operator=(const Linked_List& __other) {
+        this->head = __other.head;
+        this->tail = __other.tail;
+        this->current_node = __other.current_node;
+        return *this;
     }
-    */
 
-    Linked_List& operator=(std::initializer_list<T>&& __list) = delete;
-    /**
-    {
-        decltype(auto) __other  = std::forward<decltype(__list)>(__list);
-        head = __other.head;
-        tail = __other.__get_tail();
-        current_node = __other.current_node;
+    Linked_List& operator=(std::initializer_list<T>&& __list) {
+        auto __other = std::forward<decltype(__list)>(__list);
+        this->head = __other.head;
+        this->tail = __other.tail;
+        this->current_node = __other.current_node;
+        return *this;
     }
-    */
 
-    /**
     Linked_List& assign(const Linked_List& __other) {
         *this = __other;
+        return *this;
     }
 
     Linked_List& assign(std::initializer_list<T>&& __list) {
-        *this = __list;
+        *this = Linked_List {__list};
+        return *this;
     }
-    */
+
+    Linked_List& swap(Linked_List& __other) {
+        auto __temp = *this;
+              *this = __other;
+            __other = __temp;
+
+        return *this;
+    }
 
     // ITERATOR
     class iterator {
     private:
         Node<T>* __node;
     public:
-        iterator() noexcept : __node{head} {}
+        using value_type = T;
+        using reference = T&;
+        using pointer = T*;
+        using difference_type = ptrdiff_t;
+        using iterator_category = std::bidirectional_iterator_tag;
+        
+        iterator() noexcept = default;
         iterator(Node<T>* __arg) noexcept : __node{__arg} {}
 
         iterator& operator=(Node<T>* __arg) {
@@ -116,7 +128,7 @@ public:
             return *this;
         }
 
-        iterator operator++() {
+        iterator& operator++() {
             if (__node)
                 __node = __node->__next;
             return *this;
@@ -128,7 +140,7 @@ public:
             return __iter;
         }
 
-        iterator operator--() {
+        iterator& operator--() {
             if (__node)
                 __node = __node->__prev;
             return *this;
@@ -140,26 +152,40 @@ public:
             return __iter;
         }
 
-        bool operator==(const iterator& __iter) {
+        iterator operator+(const int& __offset) {
+            auto __temp = __node;
+            size_t __count {0};
+            while (__count < __offset) {
+                __temp = __temp->__next;
+                ++__count;
+            }
+            return __temp;
+        }
+
+        difference_type operator-(const iterator& __other) {
+            return static_cast<ptrdiff_t>(__other.__node - __node);
+        }
+
+        bool operator==(const iterator& __iter) const {
             return (__node == __iter.__node);
         }
 
-        bool operator!=(const iterator& __iter) {
+        bool operator!=(const iterator& __iter) const {
             return (__node != __iter.__node);
         }
 
-        T& operator*() {
+        T& operator*() const {
             return __node->__data;
         }
         // UNFINISHED
     };
 
     iterator begin() {
-        return iterator(head);
+        return iterator{head};
     }
 
     iterator end() {
-        return iterator(nullptr);
+        return iterator{nullptr};
     }
 
     // MODIFIERS
@@ -402,6 +428,46 @@ public:
     }
 
     // TEMPORARY ACTIONS
+    template <typename lambda>
+    Linked_List& filter(lambda __func) {
+        Linked_List __temp {};
+        for (size_t __index = 0; __index < this->length(); __index++) {
+            if (__func(this->at(__index)))
+                __temp.push_back(this->at(__index));
+        }
+        *this = __temp;
+
+        return *this;
+    }
+
+    template <typename Arg>
+    Linked_List& filter(std::function<bool(Arg)> __func) {
+        Linked_List __temp {};
+        for (size_t __index = 0; __index < this->length(); __index++) {
+            if (__func(this->at(__index)))
+                __temp.push_back(this->at(__index));
+        }
+        *this = __temp;
+
+        return *this;
+    }
+
+    template <typename lambda> // requires __Linked_List_Concept::__Callable<lambda>
+    Linked_List& transform(lambda __func) {
+        for (size_t __index = 0; __index < this->length(); __index++) {
+            (*this)[__index] = __func(this->at(__index));
+        }
+        return *this;
+    }
+
+    template <typename R, typename Arg>
+    Linked_List& transform(std::function<R(Arg)> __func) {
+        for (size_t __index = 0; __index < this->length(); __index++) {
+            (*this)[__index] = __func(this->at(__index));
+        }
+        return *this;
+    }
+    
     Linked_List& rotate(int __integer = 1) {
         if (__integer > 0) {
             for (int __counter = 0; __counter < __integer; __counter++) {
@@ -449,6 +515,8 @@ public:
         }
         return __result;
     }
+    
+    
 };
 
 #endif // __CUSTOM_LINKED_LIST_HPP__
