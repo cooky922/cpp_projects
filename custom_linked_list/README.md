@@ -106,3 +106,4 @@ These methods aren't recommended and temporary because the sole purpose is the d
 * `reverse` and `reverse_copy`
 * `shuffle` and `shuffle_copy`
 * `sort` and `sort_copy`
+* Lexicographical Compare using `operator<=>`
