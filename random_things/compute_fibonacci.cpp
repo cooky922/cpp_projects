@@ -3,6 +3,7 @@
 /*
   Author: Desmond Gold
   Created: May 2, 2021
+  Last Edited: May 12, 2021
 */
 
 // computes fibonacci sequence in many ways:
@@ -58,7 +59,7 @@ int main(int argc, char** argv) {
   for (int i = 0; i <= 20; i++) {
     std::cout
     << "fib(" << i << ") = "
-    << fib(i) << '\n';
+    << fib1(i) << '\n';
   } 
   std::cout << '\n';
   
